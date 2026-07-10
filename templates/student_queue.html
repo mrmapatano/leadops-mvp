@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <h1>Assigned Queue</h1>
+    <span class="pill">{{ rows|length }} pending</span>
+</section>
+
+{% if rows %}
+    <section class="queue">
+        {% for row in rows %}
+            <article class="lead-card">
+                <div class="lead-meta">
+                    <h2>{{ row.business_name or "Unnamed business" }}</h2>
+                    <p>{{ row.first_name }} {{ row.last_name }} · {{ row.phone_original }} · {{ row.city }} {{ row.state }} · {{ row.vertical }}</p>
+                    {% if row.website or row.address %}
+                        <p class="muted">{{ row.website }} {{ row.address }}</p>
+                    {% endif %}
+                </div>
+                <form method="post" class="message-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="message_id" value="{{ row.message_id }}">
+                    <input type="hidden" name="contact_id" value="{{ row.id }}">
+                    <label>
+                        AI Message
+                        <textarea name="current_message" rows="5" maxlength="320" data-count-target="count-{{ row.message_id }}">{{ row.current_message }}</textarea>
+                    </label>
+                    <div class="form-row">
+                        <span id="count-{{ row.message_id }}" class="char-count">0</span>
+                        <button type="submit" name="action" value="approve">Approve</button>
+                    </div>
+                </form>
+                <form method="post" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="message_id" value="{{ row.message_id }}">
+                    <input type="hidden" name="contact_id" value="{{ row.id }}">
+                    <input type="text" name="skip_reason" placeholder="Skip reason">
+                    <button type="submit" name="action" value="skip">Skip</button>
+                </form>
+                <form method="post" class="outcome-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="message_id" value="{{ row.message_id }}">
+                    <input type="hidden" name="contact_id" value="{{ row.id }}">
+                    <select name="reply_status">
+                        {% for choice in outcome_choices %}
+                            <option value="{{ choice }}" {% if (row.outcome_reply_status or row.reply_status or '') == choice %}selected{% endif %}>{{ choice or "outcome" }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="meeting_status">
+                        {% for choice in ["", "meeting_requested", "booked", "follow_up_needed"] %}
+                            <option value="{{ choice }}" {% if (row.outcome_meeting_status or row.meeting_status or '') == choice %}selected{% endif %}>{{ choice or "meeting" }}</option>
+                        {% endfor %}
+                    </select>
+                    <label class="checkline"><input type="checkbox" name="hot" value="1" {% if row.hot or row.outcome_hot %}checked{% endif %}> HOT</label>
+                    <input type="text" name="notes" value="{{ row.outcome_notes or row.notes or '' }}" placeholder="Notes">
+                    <button type="submit" name="action" value="outcome">Save Outcome</button>
+                </form>
+            </article>
+        {% endfor %}
+    </section>
+{% else %}
+    <section class="panel">
+        <p>No assigned leads in your queue.</p>
+    </section>
+{% endif %}
+{% endblock %}

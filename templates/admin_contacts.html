@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <h1>Contacts</h1>
+    <a class="button" href="{{ url_for('admin_assign') }}">Assign</a>
+</section>
+
+<form method="get" class="filters panel">
+    <input type="search" name="q" value="{{ filters.q }}" placeholder="Search business, phone, city, trade">
+    <select name="status">
+        <option value="">Any status</option>
+        {% for status in ["pending", "assigned", "approved", "exported", "skipped", "blocked"] %}
+            <option value="{{ status }}" {% if filters.status == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+    </select>
+    <select name="student_id">
+        <option value="">Any student</option>
+        {% for student in students %}
+            <option value="{{ student.id }}" {% if filters.student_id|string == student.id|string %}selected{% endif %}>{{ student.name }}</option>
+        {% endfor %}
+    </select>
+    <select name="block_reason">
+        <option value="">Any block reason</option>
+        {% for reason in ["invalid_phone", "suppressed", "duplicate"] %}
+            <option value="{{ reason }}" {% if filters.block_reason == reason %}selected{% endif %}>{{ reason }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<section class="panel">
+    <p class="muted">{{ total }} contact(s) · page {{ page }} of {{ pages }}</p>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Business</th><th>Phone</th><th>City</th><th>State</th><th>Trade</th>
+                    <th>Status</th><th>Block</th><th>Student</th><th>Message</th><th>Source</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.business_name }}</td>
+                        <td>{{ row.phone_original }}<br><span class="muted">{{ row.phone_normalized }}</span></td>
+                        <td>{{ row.city }}</td>
+                        <td>{{ row.state }}</td>
+                        <td>{{ row.vertical }}</td>
+                        <td><span class="pill">{{ row.status }}</span></td>
+                        <td>{{ row.block_reason or "" }}</td>
+                        <td>{{ row.student_name or "" }}</td>
+                        <td>{{ row.message_status or "" }}</td>
+                        <td>{{ row.source_file }} #{{ row.source_row }}</td>
+                        <td><a class="link" href="{{ url_for('admin_contact_edit', contact_id=row.id) }}">Edit</a></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="12">No contacts found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if pages > 1 %}
+    <nav class="pager">
+        {% if has_prev %}
+            <a class="button" href="{{ url_for('admin_contacts', page=page-1, q=filters.q, status=filters.status, student_id=filters.student_id, block_reason=filters.block_reason) }}">&larr; Prev</a>
+        {% endif %}
+        <span class="muted">Page {{ page }} / {{ pages }}</span>
+        {% if has_next %}
+            <a class="button" href="{{ url_for('admin_contacts', page=page+1, q=filters.q, status=filters.status, student_id=filters.student_id, block_reason=filters.block_reason) }}">Next &rarr;</a>
+        {% endif %}
+    </nav>
+    {% endif %}
+</section>
+{% endblock %}

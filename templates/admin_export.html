@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <h1>SmarterContact Export</h1>
+    <a class="button" href="{{ url_for('admin_contacts', status='approved') }}">Approved Rows</a>
+</section>
+
+<section class="grid two">
+    <form method="post" class="panel stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <h2>Approved CSV</h2>
+        <p class="big-number">{{ metrics.sent_ready }}</p>
+        <p class="muted">Rows currently approved and not yet exported.</p>
+        <button type="submit">Download CSV</button>
+    </form>
+    <div class="panel">
+        <h2>Required Fields</h2>
+        <p>phone, first_name, last_name, business_name, city, state, vertical, message, contact_id, student_id, message_id, source_file, source_row, status</p>
+    </div>
+</section>
+{% endblock %}

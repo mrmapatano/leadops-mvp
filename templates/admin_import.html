@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <h1>Imports</h1>
+    <a class="button" href="{{ url_for('admin_contacts') }}">View Contacts</a>
+</section>
+
+<section class="grid three">
+    <form method="post" enctype="multipart/form-data" class="panel stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <h2>Contacts</h2>
+        <input type="hidden" name="kind" value="contacts">
+        <input type="file" name="file" accept=".csv,.xlsx,.txt" required>
+        <button type="submit">Import Contacts</button>
+    </form>
+    <form method="post" enctype="multipart/form-data" class="panel stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <h2>AI SMS Output</h2>
+        <input type="hidden" name="kind" value="ai">
+        <input type="file" name="file" accept=".csv,.xlsx,.txt" required>
+        <button type="submit">Import AI Messages</button>
+    </form>
+    <form method="post" enctype="multipart/form-data" class="panel stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <h2>Suppression</h2>
+        <input type="hidden" name="kind" value="suppression">
+        <input type="file" name="file" accept=".csv,.xlsx,.txt" required>
+        <button type="submit">Import Suppression</button>
+    </form>
+</section>
+
+<section class="panel">
+    <p class="muted">Tip: import suppression lists <strong>before</strong> contacts so DNC numbers are blocked on arrival.</p>
+</section>
+
+{% if result %}
+<section class="panel">
+    <h2>Import Result</h2>
+    <pre>{{ result }}</pre>
+</section>
+{% endif %}
+{% endblock %}

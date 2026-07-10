@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <h1>Admin Dashboard</h1>
+    <div class="actions">
+        <a class="button" href="{{ url_for('admin_import') }}">Import</a>
+        <a class="button" href="{{ url_for('admin_export') }}">Export CSV</a>
+    </div>
+</section>
+
+<section class="metrics">
+    <div><span>Total</span><strong>{{ metrics.total_contacts }}</strong></div>
+    <div><span>Pending</span><strong>{{ metrics.pending }}</strong></div>
+    <div><span>Assigned</span><strong>{{ metrics.assigned }}</strong></div>
+    <div><span>Approved</span><strong>{{ metrics.approved }}</strong></div>
+    <div><span>Sent Ready</span><strong>{{ metrics.sent_ready }}</strong></div>
+    <div><span>Exported</span><strong>{{ metrics.exported }}</strong></div>
+    <div><span>Skipped</span><strong>{{ metrics.skipped }}</strong></div>
+    <div><span>Blocked</span><strong>{{ metrics.blocked }}</strong></div>
+    <div><span>Replies</span><strong>{{ metrics.replies }}</strong></div>
+    <div><span>HOT</span><strong>{{ metrics.hot }}</strong></div>
+    <div><span>Meeting Requests</span><strong>{{ metrics.meeting_requested }}</strong></div>
+    <div><span>Booked</span><strong>{{ metrics.booked }}</strong></div>
+    <div><span>Follow Ups</span><strong>{{ metrics.follow_up }}</strong></div>
+    <div><span>Wrong Numbers</span><strong>{{ metrics.wrong_number }}</strong></div>
+</section>
+
+<section class="grid two">
+    <div class="panel">
+        <h2>HOT Leads</h2>
+        {% if hot_leads %}
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Business</th><th>Phone</th><th>Student</th><th>Outcome</th><th>Notes</th></tr></thead>
+                    <tbody>
+                    {% for lead in hot_leads %}
+                        <tr>
+                            <td>{{ lead.business_name }}</td>
+                            <td>{{ lead.phone_original }}</td>
+                            <td>{{ lead.student_name or "-" }}</td>
+                            <td>{{ lead.reply_status or lead.meeting_status or "hot" }}</td>
+                            <td>{{ lead.notes or "" }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="muted">No HOT leads yet.</p>
+        {% endif %}
+    </div>
+    <div class="panel">
+        <h2>Leaderboard</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Student</th><th>Approved</th><th>HOT</th><th>Booked</th><th>Payout</th></tr></thead>
+                <tbody>
+                {% for row in leaderboard %}
+                    <tr>
+                        <td>{{ row.student_name }}</td>
+                        <td>{{ row.approved_count }}</td>
+                        <td>{{ row.hot_count }}</td>
+                        <td>{{ row.booked_count }}</td>
+                        <td>${{ "%.2f"|format(row.payout_total) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <h2>Recent Imports</h2>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Type</th><th>File</th><th>Total</th><th>Accepted</th><th>Invalid</th><th>Suppressed</th><th>Duplicate</th><th>Matched</th></tr>
+            </thead>
+            <tbody>
+                {% for batch in batches %}
+                    <tr>
+                        <td>{{ batch.import_type }}</td>
+                        <td>{{ batch.source_file }}</td>
+                        <td>{{ batch.total_rows }}</td>
+                        <td>{{ batch.accepted_rows }}</td>
+                        <td>{{ batch.blocked_invalid }}</td>
+                        <td>{{ batch.blocked_suppressed }}</td>
+                        <td>{{ batch.blocked_duplicate }}</td>
+                        <td>{{ batch.matched_rows }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="8">No imports yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+

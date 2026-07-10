@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <h1>Edit Contact #{{ contact.id }}</h1>
+    <a class="button" href="{{ url_for('admin_contacts') }}">Back to Contacts</a>
+</section>
+
+<section class="panel narrow">
+    <p class="muted">
+        Current status: <span class="pill">{{ contact.status }}</span>
+        {% if contact.block_reason %} · block reason: {{ contact.block_reason }}{% endif %}
+    </p>
+    <p class="muted">Fixing the phone re-checks invalid / duplicate / suppressed. If it now passes and the
+        contact was pending or blocked, it returns to the assignable pool.</p>
+    <form method="post" class="stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label>Business name<input type="text" name="business_name" value="{{ contact.business_name or '' }}"></label>
+        <div class="grid two">
+            <label>First name<input type="text" name="first_name" value="{{ contact.first_name or '' }}"></label>
+            <label>Last name<input type="text" name="last_name" value="{{ contact.last_name or '' }}"></label>
+        </div>
+        <label>Phone<input type="text" name="phone" value="{{ contact.phone_original or '' }}"></label>
+        <div class="grid two">
+            <label>City<input type="text" name="city" value="{{ contact.city or '' }}"></label>
+            <label>State<input type="text" name="state" value="{{ contact.state or '' }}"></label>
+        </div>
+        <label>Trade / vertical<input type="text" name="vertical" value="{{ contact.vertical or '' }}"></label>
+        <label>Website<input type="text" name="website" value="{{ contact.website or '' }}"></label>
+        <label>Address<input type="text" name="address" value="{{ contact.address or '' }}"></label>
+        <button type="submit">Save Contact</button>
+    </form>
+</section>
+{% endblock %}

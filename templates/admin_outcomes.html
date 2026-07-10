@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <h1>Outcomes</h1>
+    <a class="button" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+</section>
+
+<section class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Lead</th><th>Student</th><th>Status</th><th>Update</th></tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>
+                            <strong>{{ row.business_name }}</strong><br>
+                            <span class="muted">{{ row.phone_original }} · {{ row.city }} {{ row.state }}</span>
+                        </td>
+                        <td>{{ row.student_name or "" }}</td>
+                        <td>{{ row.status }} / {{ row.message_status or "" }}</td>
+                        <td>
+                            <form method="post" class="outcome-form">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="contact_id" value="{{ row.id }}">
+                                <input type="hidden" name="message_id" value="{{ row.message_id or '' }}">
+                                <input type="hidden" name="student_id" value="{{ row.assigned_student_id or '' }}">
+                                <select name="reply_status">
+                                    {% for choice in outcome_choices %}
+                                        <option value="{{ choice }}" {% if (row.outcome_reply_status or row.reply_status or '') == choice %}selected{% endif %}>{{ choice or "none" }}</option>
+                                    {% endfor %}
+                                </select>
+                                <select name="meeting_status">
+                                    {% for choice in ["", "meeting_requested", "booked", "follow_up_needed"] %}
+                                        <option value="{{ choice }}" {% if (row.outcome_meeting_status or row.meeting_status or '') == choice %}selected{% endif %}>{{ choice or "none" }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label class="checkline"><input type="checkbox" name="hot" value="1" {% if row.hot or row.outcome_hot %}checked{% endif %}> HOT</label>
+                                <input type="text" name="notes" value="{{ row.outcome_notes or row.notes or '' }}" placeholder="Notes">
+                                <button type="submit">Save</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4">No assigned or reviewed leads yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

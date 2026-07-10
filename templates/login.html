@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel narrow">
+    <h1>Sign In</h1>
+    <form method="post" class="stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label class="choice">
+            <input type="radio" name="role" value="admin" checked>
+            <span>Abe / Admin</span>
+        </label>
+        {% if admin_pin_required %}
+        <label>
+            Admin PIN
+            <input type="password" name="pin" placeholder="Required for admin" autocomplete="off">
+        </label>
+        {% endif %}
+        <label class="choice">
+            <input type="radio" name="role" value="student">
+            <span>Student</span>
+        </label>
+        <label>
+            Student identity
+            <select name="student_id">
+                <option value="">Select student</option>
+                {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit">Continue</button>
+    </form>
+</section>
+{% endblock %}

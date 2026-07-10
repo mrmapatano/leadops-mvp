@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-head">
+    <h1>Assign Leads</h1>
+    <a class="button" href="{{ url_for('student_queue') }}">Student Queue</a>
+</section>
+
+<section class="grid two">
+    <form method="post" class="panel stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <h2>Next Accepted Contacts</h2>
+        <label>
+            Student
+            <select name="student_id" required>
+                {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Count
+            <input type="number" name="count" min="1" value="10" required>
+        </label>
+        <button type="submit">Assign</button>
+    </form>
+    <div class="panel">
+        <h2>Queue Health</h2>
+        <dl class="stats-list">
+            <div><dt>Pending with messages</dt><dd>{{ metrics.pending_with_messages }}</dd></div>
+            <div><dt>Assigned</dt><dd>{{ metrics.assigned }}</dd></div>
+            <div><dt>Sent ready</dt><dd>{{ metrics.sent_ready }}</dd></div>
+            <div><dt>Blocked</dt><dd>{{ metrics.blocked }}</dd></div>
+        </dl>
+    </div>
+</section>
+
+{% if assigned %}
+<section class="panel">
+    <h2>Assigned Now</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Contact</th><th>Message</th><th>Business</th><th>Phone</th></tr></thead>
+            <tbody>
+                {% for row in assigned %}
+                    <tr>
+                        <td>{{ row.contact_id }}</td>
+                        <td>{{ row.message_id }}</td>
+                        <td>{{ row.business_name }}</td>
+                        <td>{{ row.phone_normalized }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
