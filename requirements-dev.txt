@@ -1,0 +1,2 @@
+# Dev/test only. App itself needs just requirements.txt.
+pytest>=8.0,<9
