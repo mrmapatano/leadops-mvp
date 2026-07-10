@@ -1,0 +1,9 @@
+business_name,first_name,last_name,phone,city,state,vertical,website,address,source
+Pikes Peak Plumbing,Ana,Lopez,(719) 555-0101,Colorado Springs,CO,Plumbing,https://pikespeakplumbing.example,12 Cascade Ave,field_sample
+Summit Roof Repair,Sam,Rivera,719-555-0102,Colorado Springs,CO,Roofing,https://summitroof.example,44 Tejon St,field_sample
+Invalid Electric,Ivy,Stone,55512,Pueblo,CO,Electrical,https://invalidelectric.example,9 Union Ave,field_sample
+Duplicate HVAC,Dan,Moore,719-555-0101,Denver,CO,HVAC,https://duplicatehvac.example,90 Market St,field_sample
+Suppressed Solar,Nia,King,719-555-0199,Aurora,CO,Solar,https://suppressedsolar.example,17 Havana St,field_sample
+Boulder Dental Labs,Lee,Chen,303-555-0144,Boulder,CO,Dental,https://boulderdental.example,21 Pearl St,field_sample
+Fort Collins Fitness,Rae,Patel,970-555-0155,Fort Collins,CO,Fitness,https://fcfitness.example,77 College Ave,field_sample
+
